@@ -1,25 +1,25 @@
 // To parse this JSON data, do
 //
-//     final articlesList = articlesListFromJson(jsonString);
+//     final articlesListNews = articlesListNewsFromJson(jsonString);
 
 import 'dart:convert';
 
-ArticlesList articlesListFromJson(String str) => ArticlesList.fromJson(json.decode(str));
+ArticlesListNews articlesListNewsFromJson(String str) => ArticlesListNews.fromJson(json.decode(str));
 
-String articlesListToJson(ArticlesList data) => json.encode(data.toJson());
+String articlesListNewsToJson(ArticlesListNews data) => json.encode(data.toJson());
 
-class ArticlesList {
+class ArticlesListNews {
   String status;
   int totalResults;
   List<Article> articles;
 
-  ArticlesList({
+  ArticlesListNews({
     required this.status,
     required this.totalResults,
     required this.articles,
   });
 
-  factory ArticlesList.fromJson(Map<String, dynamic> json) => ArticlesList(
+  factory ArticlesListNews.fromJson(Map<String, dynamic> json) => ArticlesListNews(
     status: json["status"],
     totalResults: json["totalResults"],
     articles: List<Article>.from(json["articles"].map((x) => Article.fromJson(x))),
@@ -33,14 +33,14 @@ class ArticlesList {
 }
 
 class Article {
-  Source source;
+  Source?source;
   String? author;
-  String title;
-  String description;
-  String url;
+  String ? title;
+  String? description;
+  String? url;
   String? urlToImage;
-  DateTime publishedAt;
-  String content;
+  DateTime? publishedAt;
+  String ?content;
 
   Article({
     required this.source,
@@ -65,20 +65,20 @@ class Article {
   );
 
   Map<String, dynamic> toJson() => {
-    "source": source.toJson(),
+    "source": source?.toJson(),
     "author": author,
     "title": title,
     "description": description,
     "url": url,
     "urlToImage": urlToImage,
-    "publishedAt": publishedAt.toIso8601String(),
+    "publishedAt": publishedAt?.toIso8601String(),
     "content": content,
   };
 }
 
 class Source {
   String? id;
-  String name;
+  String? name;
 
   Source({
     required this.id,

@@ -1,8 +1,10 @@
 import 'package:exam_news/bloc/home_bloc.dart';
-import 'package:exam_news/models/post_news_model.dart';
-import 'package:exam_news/service/http_service.dart';
+import 'package:exam_news/bloc/home_event.dart';
+import 'package:exam_news/bloc/home_state.dart';
+import 'package:exam_news/models/articles_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,18 +14,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ScrollController scrollController = ScrollController();
   late HomeBloc homeBloc;
 
-  bool isLoading = true;
-  List<Article> articles = [];
+  //int currentPage = 1;
+//List<Article> list = [];
+
   //
-  // _loadArticles() async {
+  // loadArticleNews() async {
   //   var response =
-  //   await Network.GET(Network.API_GET_NEWS, Network.paramsArticle());
-  //   List<Article> articlesList = Network.parseArticles(response!);
-  //   print(articlesList.length);
+  //   await Network.GET(Network.API_NEWS_INFOS, Network.paramsArticle());
+  //   List<Article> articles = Network.parseArticles(response!);
+  //   print(articles.length);
   //   setState(() {
-  //     articles = articlesList;
+  //     list = articles;
   //   });
   // }
 
@@ -31,86 +35,119 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    // loadArticleNews();
+    homeBloc = context.read<HomeBloc>();
+    homeBloc.add(LoadArticleNewsListEvent());
+    // print(list.length);
+    // scrollController.addListener(() {
+    //   if(scrollController.position.maxScrollExtent <= scrollController.offset){
+    //     loadArticleNews();
+    //   }
+    // });
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black54,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black54,
+        title: Text("N E W S",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
       ),
-      body: Stack(
-        children: [
-          ListView.builder(
-            itemCount: articles.length,
-            itemBuilder: (context, index) {
-              return itemOfArticle(articles[index], index);
-            },
-          )
-        ],
+      body: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              ListView.builder(
+                  controller: scrollController,
+                  itemCount: homeBloc.list.length,
+                  itemBuilder: (context, index) {
+                    return itemOfArticleListNews(homeBloc.list[index], index);
+                  }
+              )
+
+            ],
+          );
+        },
+
       ),
     );
   }
 
-  Widget itemOfArticle(Article article, int index) {
-    return Container(
-      margin: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.grey[300],
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(20)
-            ),
-            child: Column(
-              children: [
-                Container(
-                  child: Row(
-                    children: [
-                      Text(index.toString()),
-                      SizedBox(width: 10),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            image: NetworkImage(article.urlToImage!),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Text(article.source.name, style: TextStyle(fontSize: 20))
-                    ],
-                  ),
+  Widget itemOfArticleListNews(Article list, int index) {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 10, right: 10),
+          child: Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 10),
+                height: 100,
+                width: 150,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(35),
+                    image: DecorationImage(
+                      image: NetworkImage(list.urlToImage!),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              SizedBox(),
+              Card(
+                color: Colors.black54,
+                margin: EdgeInsets.all(20),
+                child: Text(
+                  list.source!.name!,
+                  style: TextStyle(fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
-                Divider(),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(),
-                  child: Column(
-                    children: [
-                      Text(article.title),
-                      Divider(),
-                      Text(article.description),
-                      Divider(),
-                      Text(article.content),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+
+
+            ],
           ),
-        ],
-      ),
+        ),
+        SizedBox(),
+        Card(
+          color: Colors.black54,
+
+          child: Text(
+            list.title!,
+            style: TextStyle(fontSize: 16, color: Colors.white,),
+          ),
+        ),
+
+        SizedBox(),
+        Card(
+          color: Colors.black54,
+          child: Text(
+            list.description!,
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
+        ),
+        SizedBox(),
+        Card(
+          color: Colors.black54,
+          child: Text(
+            list.content!,
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
+        ),
+        SizedBox(),
+        Card(
+          color: Colors.black54,
+          child: Text(
+
+            list.url!,
+            style: TextStyle(color: Colors.blue),
+          ),
+        ),
+      ],
     );
   }
 }

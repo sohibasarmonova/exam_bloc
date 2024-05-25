@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:exam_news/models/post_news_model.dart';
+import 'package:exam_news/models/articles_model.dart';
 
 
 
@@ -24,7 +24,7 @@ class HomeErrorState extends HomeState {
 }
 
 class HomeArticleListState extends HomeState {
-  final List<ArticlesList> articles;
+  final List<Article> articles;
 
   HomeArticleListState(this.articles);
 

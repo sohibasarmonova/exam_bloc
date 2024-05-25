@@ -1,27 +1,24 @@
-
-import 'package:exam_news/models/post_news_model.dart';
+import 'package:bloc/bloc.dart';
+import 'package:exam_news/models/articles_model.dart';
 import 'package:exam_news/service/http_service.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'home_event.dart';
 import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  List<Article> articles = [];
-
+  int currentPage = 1;
+  List<Article> list = [];
   HomeBloc() : super(HomeInitialState()) {
-    on<LoadArticleListEvent>( _loadArticles);
+    on<LoadArticleNewsListEvent>(_onLoadArticlesListEvent);
   }
 
-
-  Future<void>  _loadArticles(LoadArticleListEvent event,
-      Emitter<HomeState>emitter) async {
+  Future<void> _onLoadArticlesListEvent(LoadArticleNewsListEvent event, Emitter<HomeState> emit) async{
     var response =
-    await Network.GET(Network.API_GET_NEWS, Network.paramsArticle());
-    List<Article> articlesList = Network.parseArticles(response!);
-    print(articlesList.length);
-
-    articles = articlesList;
-    emit(HomeLoadingState());
+    await Network.GET(Network.API_NEWS_INFOS, Network.paramsArticle());
+      emit(HomeLoadingState());
+    List<Article> articles  = Network.parseArticles(response!);
+    list.addAll(articles);
+    emit(HomeArticleListState(list));
   }
 }
+
