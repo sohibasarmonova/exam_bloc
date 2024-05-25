@@ -38,12 +38,12 @@ class _HomePageState extends State<HomePage> {
     // loadArticleNews();
     homeBloc = context.read<HomeBloc>();
     homeBloc.add(LoadArticleNewsListEvent());
-    // print(list.length);
-    // scrollController.addListener(() {
-    //   if(scrollController.position.maxScrollExtent <= scrollController.offset){
-    //     loadArticleNews();
-    //   }
-    // });
+    //print(list.length);
+    scrollController.addListener(() {
+      if(scrollController.position.maxScrollExtent <= scrollController.offset){
+        homeBloc.add(LoadArticleNewsListEvent());
+      }
+    });
   }
 
 
@@ -114,6 +114,7 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(),
         Card(
+          margin: EdgeInsets.all(10),
           color: Colors.black54,
 
           child: Text(
@@ -124,6 +125,7 @@ class _HomePageState extends State<HomePage> {
 
         SizedBox(),
         Card(
+          margin: EdgeInsets.all(10),
           color: Colors.black54,
           child: Text(
             list.description!,
@@ -132,6 +134,7 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(),
         Card(
+          margin: EdgeInsets.all(10),
           color: Colors.black54,
           child: Text(
             list.content!,
@@ -140,6 +143,7 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(),
         Card(
+          margin: EdgeInsets.all(10),
           color: Colors.black54,
           child: Text(
 
